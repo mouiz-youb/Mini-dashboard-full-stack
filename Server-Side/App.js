@@ -57,6 +57,148 @@ try {
 }
 }
 app.post('/createuser', CreateUser)
+const GetAllUsers = async(req,res)=>{
+    try {
+        const users = await prisma.user.findMany(
+        )
+        if(!users){
+            return res.status(400).json({
+                success:false,
+                message:"No users found"
+            })
+        }
+        res.status(200).json({
+            success:true,
+            data:users
+        })
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({
+            success:false,
+            message:"Error getting users"
+        })
+    }
+}
+app.get('/users',GetAllUsers)
+const GetFisrt =async(req,res)=>{
+    try {
+        const Firstuser = await prisma.user.findFirst()
+        if(!Firstuser){
+            return res.status(400).json({
+                success:false,
+                message:"No user found"
+            })
+        }
+        res.status(200).json({
+            success:true,
+            data:Firstuser
+        })
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({
+            success:false,
+            message:"Error getting users"
+        })
+    }
+}
+app.get('/user',GetFisrt)
+const GetUserById = async(req,res)=>{
+    try {
+        const {id} =req.params
+        const user = await prisma.user.findUnique({
+            where:{
+                id:Number(id)
+            }
+        }
+        )
+        if(!user){
+            return res.status(400).json({
+                success:false,
+                message:"No user found"
+            })
+        }
+        res.status(200).json({
+            success:true,
+            data:user
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success:false,
+            message:"Error getting user"
+        })
+    }
+}
+app.get('/user/:id',GetUserById)
+const UpdateUser = async(req,res)=>{
+    try {
+        const {id} =req.params
+        const {name ,email} = req.body
+        // Check if user exists
+        const userExists = await prisma.user.findUnique({
+            where:{
+                id:Number(id)
+            }
+        })
+        if(!userExists){
+            return res.status(400).json({
+                success:false,
+                message:"User not found"
+            })
+        }
+        const user = await prisma.user.update({
+            where:{
+                id:Number(id)
+            },
+            data:{
+                name:name,
+                email:email
+            }
+        })
+        res.status(200).json({
+            success:true,
+            data:user
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success:false,
+            message:"Error updating user"
+        })
+    }
+}
+app.put('/user/:id',UpdateUser)
+const DeleteUser = async(req,res)=>{
+    try {
+        const {id} =req.params
+        // Check if user exists
+        const userExists = await prisma.user.findUnique({
+            where:{
+                id:Number(id)
+            }
+        })
+        if(!userExists){
+            return res.status(400).json({
+                success:false,
+                message:"User not found"
+            })
+        }
+        // Delete user
+        const user = await prisma.user.delete({
+            where:{
+                id:Number(id)
+            }
+        })
+        res.status(200).json({
+            success:true,
+            message:"User deleted"
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success:false,
+            message:"Error deleting user"
+        })
+    }
+}
+app.delete('/user/:id',DeleteUser)
 // const Main = async ()=>{
 // const user  =await prisma.user.create({
 //     data:{
