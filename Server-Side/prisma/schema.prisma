@@ -16,6 +16,22 @@ model User {
   id Int @id @default(autoincrement())
   email String @unique 
   name String?
+  posts Post[]
+}
+
+model Post {
+  id       Int @id @default(autoincrement())
+  user    User @relation(fields: [userId], references: [id])
+  userId Int @unique
+  title    String
+  content  String?
+  comments Comment[]
+}
+model Comment {
+  id      Int @id @default(autoincrement())
+  post    Post @relation(fields: [postId], references: [id])
+  postId  Int @unique
+  content String
 }
 model Product{
   id Int @id @default(autoincrement())
