@@ -1,9 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 const CreatePost = async (req, res) => {
-    const {title , content} = req.body
+    console.log('Request Body:', req.body);
+    const {title , content ,userId }  = req.body
     try {
-        if(!title ||!content){
+        if(!title ||!content ||!userId){
             return res.status(400).json({
                 success:false,
                 message:"Please provide title and content"
@@ -12,7 +13,10 @@ const CreatePost = async (req, res) => {
         const post = await prisma.post.create({
             data:{
                 title:title,
-                content:content
+                content:content,
+                user: {
+                    connect: { id: Number(userId) }
+                }
             }
         })
         res.status(201).json({
@@ -20,10 +24,12 @@ const CreatePost = async (req, res) => {
             data:post
         })
     } catch (error) {
+        console.error("Error creating post:", error);
         res.status(500).json({
-            success:false,
-            message:"Error creating post"
-        })
+            success: false,
+            message: "Error creating post",
+            error: error.message
+        });
     }
 }
 const GetAllPost = async (req, res) => {

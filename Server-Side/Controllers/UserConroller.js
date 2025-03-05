@@ -1,15 +1,15 @@
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 const CreateUser = async (req, res) => {
-    const { name, email } = req.body
+    const { name, email ,password } = req.body
     try {
-        if (!email) {
+        if (!email ||!password) {
             return res.status(400).json({
                 success: false,
-                message: "Please provide email"})
+                message: "Please provide email and password"})
             }
             // Check if user already exists
-            const userExists = await prisma.user.findUnique({
+            const userExists = await prisma.userX.findUnique({
                 where: {
                     email: email
                 }
@@ -20,10 +20,11 @@ const CreateUser = async (req, res) => {
                 message: "User already exists"
             })
         }
-        const user = await prisma.user.create({
+        const user = await prisma.userX.create({
             data: {
                 name: name,
-                email: email
+                email: email,
+                password: password
             }
         })
         res.status(201).json({

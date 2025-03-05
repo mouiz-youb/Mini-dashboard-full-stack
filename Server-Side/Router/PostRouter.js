@@ -9,3 +9,8 @@ router.get('/Post/:id',GetPostById)
 router.put('/Post/:id',UpdatePost)
 router.delete('/Deletepost/:id',DeletePost)
 export default router;
+// {
+//     "name":"abdelmouiz",
+//     "email":"a_youb@estin.dz",
+//     "password":"abcABC123??"
+// }
