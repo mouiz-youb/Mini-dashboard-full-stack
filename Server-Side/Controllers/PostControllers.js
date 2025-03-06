@@ -1,5 +1,8 @@
 import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import { db } from "../Lib/Db.js";
+
+const prisma = db;
+
 const CreatePost = async (req, res) => {
     console.log('Request Body:', req.body);
     const {title , content ,userId }  = req.body
