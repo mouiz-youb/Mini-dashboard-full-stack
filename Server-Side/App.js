@@ -3,6 +3,8 @@ import { PrismaClient } from '@prisma/client';
 import UserRouter from './Router/UserRouter.js';
 import PostRouter from './Router/PostRouter.js';
 import cors from 'cors';
+import { toNodeHandler } from "better-auth/node";
+import { auth } from "./Lib/Auth.js";
 
 const prisma = new PrismaClient();
 prisma.$connect()
@@ -20,6 +22,7 @@ const port = 3000;
 app.use(express.json());
 // app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+app.all("/api/auth/*", toNodeHandler(auth));
 
 // Routes
 app.use("/", userRouter);
